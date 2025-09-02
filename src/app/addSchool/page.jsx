@@ -4,59 +4,41 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 
 export default function AddSchoolPage() {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm();
+  const { register, handleSubmit, reset } = useForm();
   const [message, setMessage] = useState("");
 
   const onSubmit = async (data) => {
-    const formData = new FormData();
-    Object.keys(data).forEach((key) => {
-      if (key === "image") {
-        if (data.image && data.image[0]) {
-          formData.append("image", data.image[0]);
-        }
+    try {
+      const res = await fetch("/api/schools", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        setMessage("School added successfully!");
+        reset();
       } else {
-        formData.append(key, data[key]);
+        setMessage("Error adding school.");
       }
-    });
-
-    const res = await fetch("/api", {
-      method: "POST",
-      body: formData,
-    });
-
-    if (res.ok) {
-      setMessage("✅ School added successfully!");
-      reset();
-    } else {
-      setMessage("❌ Failed to add school");
+    } catch (err) {
+      setMessage("Server error.");
     }
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Add School</h1>
-
+    <div className="p-6 max-w-lg mx-auto">
+      <h2 className="text-2xl font-bold mb-4">Add School</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <input {...register("name", { required: true })} placeholder="School Name" className="border p-2 w-full" />
-        {errors.name && <p className="text-red-500 text-sm">Name is required</p>}
-
         <input {...register("address", { required: true })} placeholder="Address" className="border p-2 w-full" />
-
         <input {...register("city", { required: true })} placeholder="City" className="border p-2 w-full" />
-
         <input {...register("state", { required: true })} placeholder="State" className="border p-2 w-full" />
-
-        <input {...register("contact", { required: true, pattern: /^[0-9]{10}$/ })} placeholder="Contact Number" className="border p-2 w-full" />
-        {errors.contact && <p className="text-red-500 text-sm">Enter valid 10-digit number</p>}
-
-        <input {...register("email_id", { required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ })} placeholder="Email" className="border p-2 w-full" />
-        {errors.email_id && <p className="text-red-500 text-sm">Enter valid email</p>}
-
-        <input type="file" {...register("image")} className="border p-2 w-full" />
-
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Add School</button>
+        <input {...register("contact", { required: true })} placeholder="Contact" className="border p-2 w-full" />
+        <input {...register("email", { required: true })} placeholder="Email" className="border p-2 w-full" />
+        <input {...register("image")} placeholder="Image URL" className="border p-2 w-full" />
+        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Submit</button>
       </form>
-
       {message && <p className="mt-4">{message}</p>}
     </div>
   );

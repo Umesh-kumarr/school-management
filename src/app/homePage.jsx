@@ -16,7 +16,7 @@ export default function HomePage() {
         </Link>
 
         <Link
-          href="/showSchools"
+          href="/showSchool"
           className="bg-green-500 text-white px-6 py-3 rounded-lg shadow hover:bg-green-600"
         >
           📚 Show Schools
