@@ -29,39 +29,64 @@ export default function ShowSchoolsPage() {
   }, []);
 
   if (loading) {
-    return <p className="p-6 text-gray-600">Loading schools...</p>;
+    return (
+      <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center">
+        <p className="text-lg font-medium text-gray-600">Loading schools...</p>
+      </div>
+    );
   }
 
   if (error) {
-    return <p className="p-6 text-red-500">Error: {error}</p>;
+    return (
+      <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center">
+        <p className="text-lg font-medium text-red-600">Error: {error}</p>
+      </div>
+    );
   }
 
   if (schools.length === 0) {
-    return <p className="p-6 text-gray-500">No schools found.</p>;
+    return (
+      <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center">
+        <p className="text-lg font-medium text-gray-500">No schools found.</p>
+      </div>
+    );
   }
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Schools List</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="mx-auto w-full  p-4 sm:p-6 bg-amber-50">
+      <h2 className="mb-6 text-2xl font-bold text-gray-900 sm:text-3xl">
+        Schools List
+      </h2>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {schools.map((school) => (
           <div
             key={school.id}
-            className="border rounded-lg shadow p-4 hover:shadow-lg transition"
+            className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow duration-200"
+            role="article"
+            aria-labelledby={`school-${school.id}-title`}
           >
-            {school.image && (
+            {school.image ? (
               <img
                 src={school.image}
-                alt={school.name}
-                className="w-full h-40 object-cover rounded mb-2"
+                alt={`${school.name} image`}
+                className="mb-3 h-48 w-full rounded-md object-cover"
               />
+            ) : (
+              <div className="mb-3 flex h-48 w-full items-center justify-center rounded-md bg-gray-100">
+                <span className="text-gray-400">No Image</span>
+              </div>
             )}
-            <h3 className="text-xl font-bold">{school.name}</h3>
-            <p className="text-gray-700">
+            <h3
+              id={`school-${school.id}-title`}
+              className="text-xl font-semibold text-gray-900"
+            >
+              {school.name}
+            </h3>
+            <p className="mt-1 text-gray-600">
               {school.address}, {school.city}, {school.state}
             </p>
-            <p>📞 {school.contact}</p>
-            <p>📧 {school.email_id}</p>
+            <p className="mt-1 text-gray-600">📞 {school.contact}</p>
+            <p className="mt-1 text-gray-600">📧 {school.email_id}</p>
           </div>
         ))}
       </div>
